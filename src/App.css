@@ -1,0 +1,36 @@
+.sd {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+}
+
+
+/* Khi hover vào chữ */
+.ef:hover {
+  background-image: linear-gradient(to right, #6a11cb, #2575fc);
+  transition: transform 0.3s ease, background-image 0.3s ease;
+  box-shadow: 0 8px 32px rgba(106, 17, 203, 0.3), 0 8px 32px rgba(37, 117, 252, 0.3);
+  transform: scale(1.02);
+}
+
+.sdNavBar {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: white  ;
+  box-shadow:
+    0 4px 15px rgba(106, 17, 203, 0.25),
+    0 4px 15px rgba(37, 117, 252, 0.25);
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sdNavBar:hover {
+  box-shadow:
+    0 8px 30px rgba(106, 17, 203, 0.4),
+    0 8px 30px rgba(37, 117, 252, 0.4);
+
+  transform: scale(1.02);
+}
+
