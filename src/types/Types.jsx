@@ -65,36 +65,41 @@ export const accountType = {
 
 export const searchType = {
     is_round_trip: false,
-    from : "",
-    to : "",
-    startDate : "",
-    endDate : "",
-    passengerList : [
+    from: "",
+    to: "",
+    startDate: "",
+    endDate: "",
+    phone: "",
+    email: "",
+    fullName: "",
+    flight_id: "",
+    seatype_id: "",
+    passengerList: [
         {
             id: 1,
             title: "adult",
             condition: "Từ 12 tuổi trở lên",
-            listPerson : []
+            listPerson: []
         },
         {
             id: 2,
             title: "child",
             condition: "Từ 2 -12 tuổi",
-            listPerson : []
+            listPerson: []
         },
         {
             id: 3,
             title: "infant",
             condition: "Dưới 2 tuổi",
-            listPerson : []
+            listPerson: []
         }
-    ], 
+    ],
 }
 
 export const perSon = {
-      country_id : "",
-      firstName : "",
-      lastName : "",
-      gender : "",
-      birthDay : ""
+    country_id: "",
+    firstName: "",
+    lastName: "",
+    gender: "",
+    birthDay: ""
 }

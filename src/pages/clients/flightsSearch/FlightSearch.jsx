@@ -10,30 +10,36 @@ import LOGO2 from '../../../assets/LOGO2.png';
 import { BiLinkExternal } from 'react-icons/bi';
 import { AircraftContext } from '../../../contexts/AircraftProvider';
 import { SeatTypeContext } from '../../../contexts/SeatTypeProvider';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BookingContext } from '../../../contexts/BookingProvider';
-  const colorCode = ["bg-blue-800 hover:bg-blue-900", "bg-sky-400 hover:bg-sky-500", "bg-yellow-500 hover:bg-yellow-600 rounded-r-3xl "]
+const colorCode = ["bg-blue-800 hover:bg-blue-900", "bg-sky-400 hover:bg-sky-500", "bg-yellow-500 hover:bg-yellow-600 rounded-r-3xl "]
 function FlightSearch(props) {
     const flights = useContext(FlightContext);
     const airports = useContext(AirportContext);
     const aircrafts = useContext(AircraftContext);
     const seatTypes = useContext(SeatTypeContext);
-    const { booking,setBooking } = useContext(BookingContext);
-    
+    const { booking, setBooking, handleSave } = useContext(BookingContext);
+    const navigate = useNavigate();
+
     const listFlight = useMemo(() => {
-      return flights.filter(p => 
-        p.is_round_trip == booking.is_round_trip &&
-        getObjectById(airports,p.from_airport).city_id == booking.from && 
-        getObjectById(airports,p.to_airport).city_id == booking.to &&
-        p.departure_time == booking.startDate
-    )
-    }, [booking, flights,airports]);
+        return flights.filter(p =>
+            p.is_round_trip == booking.is_round_trip &&
+            getObjectById(airports, p.from_airport).city_id == booking.from &&
+            getObjectById(airports, p.to_airport).city_id == booking.to &&
+            p.departure_time == booking.startDate
+        )
+    }, [booking, flights, airports]);
 
     const countChair = (id_aircraft, seat_id) => {
         const aircraft = getObjectById(aircrafts, id_aircraft);
         return aircraft.listChair.reduce((sum, item) => item.id_seat_type == seat_id ? sum + 1 : sum, 0);
     }
 
+    const handleFlights = (flight_id, seatype_id) => {
+        setBooking({ ...booking, flight_id: flight_id, seatype_id: seatype_id });
+        handleSave({ ...booking, flight_id: flight_id, seatype_id: seatype_id });
+        navigate("/clientsIn4");
+    }
     return (
         <div className='w-[80vw] m-auto p-10 mt-10'>
             {
@@ -79,7 +85,7 @@ function FlightSearch(props) {
                         <div className='col-span-1 grid grid-cols-3 gap-0.5'>
                             {
                                 seatTypes.map((item, index) => (
-                                    <Link to="/clientsIn4"
+                                    <div onClick={() => handleFlights(p.id, item.id)}
                                         key={item.id || index}
                                         className={`flex flex-col justify-center items-center p-3 text-white cursor-pointer transition-all duration-300 hover:shadow-xl group ${colorCode[index % colorCode.length]}`}
                                     >                                        <p className='font-semibold mb-2'>{item.name}</p>
@@ -89,7 +95,7 @@ function FlightSearch(props) {
                                         <div className='flex justify-center mt-2'>
                                             <MdKeyboardArrowDown />
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))
                             }
                         </div>

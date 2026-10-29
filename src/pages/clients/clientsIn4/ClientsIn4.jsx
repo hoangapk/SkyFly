@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -10,33 +10,54 @@ import { BiCheck, BiChevronDown, BiChevronRight, BiChevronRightCircle, BiUser } 
 import { LuBaggageClaim, LuLuggage, LuShieldAlert } from 'react-icons/lu';
 import { SiTarget } from 'react-icons/si';
 import { BookingContext } from '../../../contexts/BookingProvider';
+import { getObjectById } from '../../../services/reponsitory';
+import { cities } from '../../../utils/data';
+import { FlightContext } from '../../../contexts/FlightProvider';
+import { SeatTypeContext } from '../../../contexts/SeatTypeProvider';
+import { AirlineContext } from '../../../contexts/AirlineProvider';
+
 
 function ClientsIn4(props) {
     const id = React.useId();
     const { booking, setBooking } = useContext(BookingContext);
+    const flights = useContext(FlightContext);
+    const airlines = useContext(AirlineContext);
+    const seatTypes = useContext(SeatTypeContext);
 
-      const handleChangeInput = (e, id , index) => {
-               setBooking(pre => {
-                return {
-                    ...pre,
-                    passengerList: pre.passengerList.map((p) => {
-                        if (p.id == id) {
-                            return  { ...p, listPerson: p.listPerson.map((c,i) => i == index ? {...c , [e.target.name] : e.target.value} : c) };
-                        }
-                        return p;
-                    })
-                }
-            })
-        }
-console.log(booking);
+    const handleChangeInput = (e, id, index) => {
+        setBooking(pre => {
+            return {
+                ...pre,
+                passengerList: pre.passengerList.map((p) => {
+                    if (p.id == id) {
+                        return { ...p, listPerson: p.listPerson.map((c, i) => i == index ? { ...c, [e.target.name]: e.target.value } : c) };
+                    }
+                    return p;
+                })
+            }
+        })
+    }
 
+    const handleChangeIn4 = (e) => {
+        setBooking({ ...booking, [e.target.name]: e.target.value })
+    }
+
+    const total = useMemo(() => {
+       const chair = getObjectById(seatTypes, booking.seatype_id);
+       console.log(chair?.price);
+       
+       const quantity = booking.passengerList.reduce((sum,item) => item.id != 3 ? sum + item.listPerson.length : sum,0);
+       console.log(quantity);
+       
+       return parseInt(chair?.price)*quantity;
+    },[booking,seatTypes]);
     return (
         <div className='grid grid-cols-3 m-20 gap-10'>
             <div className='col-span-2'>
                 <div className='border border-blue-600 p-4 rounded-2xl mb-5'>
                     <p className='font-bold text-xl mb-3'>Thông tin hành khách</p>
                     {booking.passengerList.map((p, index) => (
-                        p.listPerson.map((c,i) => (
+                        p.listPerson.map((c, i) => (
                             <div className='mb-5'>
                                 <Accordion>
                                     <AccordionSummary
@@ -63,14 +84,14 @@ console.log(booking);
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                                         Họ
                                                     </label>
-                                                      <Input name='firstName' onChange={(e) => handleChangeInput(e,p.id,i)} className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <Input name='firstName' onChange={(e) => handleChangeInput(e, p.id, i)} className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                     </Input>
                                                 </div>
                                                 <div className='col-span-1'>
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                                         Chữ đệm và tên
                                                     </label>
-                                                    <Input onChange={(e) => handleChangeInput(e,p.id,i)} name='lastName' className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <Input onChange={(e) => handleChangeInput(e, p.id, i)} name='lastName' className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                     </Input>
                                                 </div>
                                                 <div className="flex items-center gap-8 border border-gray-300 rounded-2xl px-3  bg-white mt-6">
@@ -78,9 +99,13 @@ console.log(booking);
                                                     <label className="flex items-center gap-3 cursor-pointer select-none">
                                                         <input
                                                             type="radio"
-                                                            name={`gender-${id}-passenger-1`}
+                                                            name={`gender-${p.id}-${i}`}
                                                             value="male"
-                                                            defaultChecked
+                                                            checked={c.gender === 'male' || !c.gender}
+                                                            onChange={(e) => {
+                                                                // Custom synthetic event for radio mapping if needed
+                                                                handleChangeInput({ target: { name: 'gender', value: 'male' } }, p.id, i);
+                                                            }}
                                                             className="p-2 border-2 border-blue-800 rounded-full appearance-none checked:bg-blue-600 checked:border-sky-400 relative flex items-center justify-center transition-all cursor-pointer focus:outline-none"
                                                         />
                                                         <span className="text-gray-800 font-medium text-base">Nam</span>
@@ -90,7 +115,11 @@ console.log(booking);
                                                     <label className="flex items-center gap-3 cursor-pointer select-none">
                                                         <input
                                                             type="radio"
-                                                            name={`gender-${id}-passenger-1`}
+                                                            name={`gender-${p.id}-${i}`}
+                                                            checked={c.gender === 'female'}
+                                                            onChange={(e) => {
+                                                                handleChangeInput({ target: { name: 'gender', value: 'female' } }, p.id, i);
+                                                            }}
                                                             value="female"
                                                             className="p-2 border-2 border-blue-800 rounded-full appearance-none checked:bg-blue-600 checked:border-sky-400 relative flex items-center justify-center transition-all cursor-pointer focus:outline-none"
                                                         />
@@ -102,14 +131,14 @@ console.log(booking);
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                                         Ngày sinh
                                                     </label>
-                                                    <Input
+                                                    <Input onChange={(e) => handleChangeInput(e, p.id, i)}
                                                         type="date"
+                                                        name="birthDay"
                                                         className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
-
                                     </AccordionDetails>
                                     <AccordionActions>
                                         <Button>Save</Button>
@@ -117,7 +146,7 @@ console.log(booking);
                                 </Accordion>
                             </div>
                         ))
-                    ))}    
+                    ))}
                 </div>
                 <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl border border-gray-200 shadow-sm mb-5">
                     {/* Tiêu đề */}
@@ -140,6 +169,8 @@ console.log(booking);
                             <input
                                 type="text"
                                 placeholder="Họ và tên"
+                                name="fullName"
+                                onChange={handleChangeIn4}
                                 className="w-full h-12 px-4 rounded-xl border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
                         </div>
@@ -152,6 +183,8 @@ console.log(booking);
                             <input
                                 type="tel"
                                 placeholder="Số điện thoại"
+                                name="phone"
+                                onChange={handleChangeIn4}
                                 className="w-full h-12 px-4 text-gray-700 placeholder-gray-400 focus:outline-none"
                             />
                         </div>
@@ -161,6 +194,8 @@ console.log(booking);
                             <input
                                 type="email"
                                 placeholder="Email"
+                                name="email"
+                                onChange={handleChangeIn4}
                                 className="w-full h-12 px-4 rounded-xl border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
                         </div>
@@ -340,7 +375,7 @@ console.log(booking);
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900">
-                                        Bảo hiểm Hành lý Chubb
+                                        Bảo hiểm Hành lý
                                     </h3>
                                     <p className="text-sm font-semibold text-orange-600 mt-0.5">
                                         24.000 VND<span className="text-gray-500 font-normal">/khách</span>
@@ -397,8 +432,8 @@ console.log(booking);
 
                         <div className="flex justify-between items-center text-sm">
                             <div>
-                                <p className="font-bold text-gray-900">Đà Nẵng DAD</p>
-                                <p className="text-xs text-gray-500">Thứ 6, 23 thg 10 2026</p>
+                                <p className="font-bold text-gray-900">{getObjectById(cities, booking.from)?.name} {getObjectById(cities, booking.from)?.code}</p>
+                                <p className="text-xs text-gray-500">{booking.startDate}</p>
                                 <p className="text-xs font-semibold mt-0.5">09:15</p>
                             </div>
 
@@ -412,17 +447,20 @@ console.log(booking);
                             </div>
 
                             <div className="text-right">
-                                <p className="font-bold text-gray-900">S. G. . HCM SGN</p>
-                                <p className="text-xs text-gray-500">Thứ 6, 23 thg 10 2026</p>
+                                <p className="font-bold text-gray-900"> {getObjectById(cities, booking.to)?.name} {getObjectById(cities, booking.to)?.code}</p>
+                                <p className="text-xs text-gray-500">{booking.startDate}</p>
                                 <p className="text-xs font-semibold mt-0.5">17:35</p>
                             </div>
                         </div>
 
                         <div className="pt-2 border-t border-gray-100 space-y-1 text-xs">
                             <div className="flex items-center gap-1.5 font-medium text-gray-800">
-                                <span className="text-red-400">✈</span> SUN PhuQuoc AIRWAYS
+                                <span className="text-red-400">✈</span>{getObjectById(airlines, getObjectById(flights, booking.flight_id)?.airline_id)?.name}
                             </div>
-                            <p className="text-gray-500">Business • Thương gia</p>
+                            <div className='flex gap-1'>
+                                <img src={getObjectById(seatTypes, booking.seatype_id)?.img_url} className='w-4.5' alt="" />
+                                <p className="text-gray-500">{getObjectById(seatTypes, booking.seatype_id)?.name}</p>
+                            </div>
                         </div>
 
                         <div className="flex flex-wrap gap-1.5 pt-1">
@@ -440,56 +478,55 @@ console.log(booking);
                         5h 30m Quá cảnh tại Phu Quoc
                     </div>
 
-                    {/* Chuyến về */}
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-3">
-                        <span className="inline-block bg-slate-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
-                            Chuyến về
-                        </span>
+                    {
+                        booking.is_round_trip && <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-3">
+                            <span className="inline-block bg-slate-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
+                                Chuyến về
+                            </span>
 
-                        <div className="flex justify-between items-center text-sm">
-                            <div>
-                                <p className="font-bold text-gray-900">S. G. . HCM SGN</p>
-                                <p className="text-xs text-gray-500">Thứ 6, 23 thg 10 2026</p>
-                                <p className="text-xs font-semibold mt-0.5">23:40</p>
-                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <div>
+                                    <p className="font-bold text-gray-900">{getObjectById(cities, booking.to)?.name} {getObjectById(cities, booking.to)?.code}</p>
+                                    <p className="text-xs text-gray-500">{booking.endDate}</p>
+                                    <p className="text-xs font-semibold mt-0.5">23:40</p>
+                                </div>
 
-                            <div className="text-center">
-                                <span className="text-xs text-gray-500 block">8h 45m</span>
-                                <div className="flex items-center justify-center gap-1 my-0.5">
-                                    <span className="w-6 bg-gray-300 inline-block"></span>
-                                    <span className="text-[11px] text-gray-600">1 điểm dừng</span>
-                                    <span className=" w-6 bg-gray-300 inline-block"></span>
+                                <div className="text-center">
+                                    <span className="text-xs text-gray-500 block">8h 45m</span>
+                                    <div className="flex items-center justify-center gap-1 my-0.5">
+                                        <span className="w-6 bg-gray-300 inline-block"></span>
+                                        <span className="text-[11px] text-gray-600">1 điểm dừng</span>
+                                        <span className=" w-6 bg-gray-300 inline-block"></span>
+                                    </div>
+                                </div>
+
+                                <div className="text-right">
+                                    <p className="font-bold text-gray-900">{getObjectById(cities, booking.from)?.name} {getObjectById(cities, booking.from)?.code}</p>
+                                    <p className="text-xs text-gray-500">{booking.endDate}</p>
+                                    <p className="text-xs font-semibold mt-0.5">08:25</p>
                                 </div>
                             </div>
 
-                            <div className="text-right">
-                                <p className="font-bold text-gray-900">Đà Nẵng DAD</p>
-                                <p className="text-xs text-gray-500">Thứ 7, 24 thg 10 2026</p>
-                                <p className="text-xs font-semibold mt-0.5">08:25</p>
+                            <div className="pt-2 border-t border-gray-100 space-y-1 text-xs">
+                                <div className="flex items-center gap-1.5 font-medium text-gray-800">
+                                    <span className="text-red-400">✈</span>{getObjectById(airlines, getObjectById(flights, booking.flight_id)?.airline_id)?.name}
+                                </div>
+                                <div className='flex gap-1'>
+                                    <img src={getObjectById(seatTypes, booking.seatype_id)?.img_url} className='w-4.5' alt="" />
+                                    <p className="text-gray-500">{getObjectById(seatTypes, booking.seatype_id)?.name}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                                <span className="border border-emerald-500 text-emerald-600 text-[11px] px-2 py-0.5 rounded-full font-medium">
+                                    Có ÁP DỤNG ĐỔI LỊCH Bay
+                                </span>
+                                <span className="border border-emerald-500 text-emerald-600 text-[11px] px-2 py-0.5 rounded-full font-medium">
+                                    ĐƯỢC HoÀN Vé
+                                </span>
                             </div>
                         </div>
-
-                        <div className="pt-2 border-t border-gray-100 space-y-1 text-xs">
-                            <div className="flex items-center gap-1.5 font-medium text-gray-800">
-                                <span className="text-red-400">✈</span> SUN PhuQuoc AIRWAYS
-                            </div>
-                            <p className="text-gray-500">Business • Thương gia</p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                            <span className="border border-emerald-500 text-emerald-600 text-[11px] px-2 py-0.5 rounded-full font-medium">
-                                Có ÁP DỤNG ĐỔI LỊCH Bay
-                            </span>
-                            <span className="border border-emerald-500 text-emerald-600 text-[11px] px-2 py-0.5 rounded-full font-medium">
-                                ĐƯỢC HoÀN Vé
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Quá cảnh chuyến về */}
-                    <div className="bg-lime-100/60 p-3 rounded-xl text-center text-xs font-medium text-gray-800">
-                        5h 15m Quá cảnh tại Hanoi
-                    </div>
+                    }
                 </div>
                 <div className="max-w-md mx-auto p-6 bg-white rounded-2xl border border-gray-200 shadow-sm font-sans">
                     {/* Tiêu đề */}
@@ -504,7 +541,7 @@ console.log(booking);
                         </span>
                         <button className="flex items-center gap-1.5 focus:outline-none group">
                             <span className="text-lg font-bold text-orange-600">
-                                38.377.115 VND
+                                {total.toLocaleString('vi-VN')} VND
                             </span>
                             <BiChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-transform" />
                         </button>
