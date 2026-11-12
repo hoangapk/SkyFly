@@ -110,10 +110,10 @@ function NavBar(props) {
         {
             isLogin ? <MdAccountCircle className='w-20 h-10 m-auto' onClick={logout} /> : <>
                 <button onClick={handleClickOpenLogin} className='sdNavBar cursor-pointer flex items-center justify-center gap-2 h-10 mt-2'>
-                    <IoMdLogIn /> {showNav && <p>Login</p>}
+                    <IoMdLogIn /> {showNav && <p>Đăng nhập</p>}
                 </button>
                 <button onClick={handleClickOpenRegister} className='sdNavBar cursor-pointer flex items-center justify-center gap-2 h-10 mt-2'>
-                    <IoMdLogOut />  {showNav && <p>Sign up</p>}
+                    <IoMdLogOut />  {showNav && <p>Đăng ký</p>}
                 </button>
             </>
         }

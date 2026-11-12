@@ -70,32 +70,32 @@ export const ROLES = {
 };
 export const LISTHOME = [
     {
-        title: "Explore",
+        title: "Khám phá",
         icon: <TbWorldSearch />,
         path: "/"
     },
     {
-        title: "History Booking",
+        title: "Lịch sử đặt vé",
         icon: <TbTicket />,
         path: "/historyPayment"
     },
     {
-        title: "Ancillary Services",
+        title: "Dịch vụ bổ trợ",
         icon: <MdOutlineSupportAgent />,
         path: "/"
     },
     {
-        title: "Itinerary",
+        title: "Hành trình",
         icon: <FaRoad />,
         path: "/"
     },
     {
-        title: "Flight Experience",
+        title: "Trải nghiệm chuyến bay",
         icon: <IoAccessibility />,
         path: "/"
     },
     {
-        title: "Help",
+        title: "Trợ giúp",
         icon: <MdOutlineContactSupport />,
         path: "/"
     },

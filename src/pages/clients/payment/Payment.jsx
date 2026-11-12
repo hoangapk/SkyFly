@@ -1,13 +1,7 @@
 import React, { useContext, useMemo, useState } from 'react';
 import Accordion from '@mui/material/Accordion';
-import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { Input } from '@mui/material';
-import { BiCheck, BiChevronRight, BiChevronRightCircle, BiUser } from 'react-icons/bi';
-import { LuBaggageClaim, LuLuggage, LuShieldAlert } from 'react-icons/lu';
 import { SiTarget } from 'react-icons/si';
 import { BookingContext } from '../../../contexts/BookingProvider';
 import { getObjectById } from '../../../services/reponsitory';

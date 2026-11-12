@@ -4,7 +4,7 @@ import FlightSearch from '../pages/clients/flightsSearch/FlightSearch';
 import { Route, Routes } from 'react-router-dom';
 import ClientsIn4 from '../pages/clients/clientsIn4/ClientsIn4';
 import SeatOption from '../pages/clients/seatOption/SeatOption';
-import Payment from '../pages/clients/payment/PayMent';
+import Payment from '../pages/clients/payment/Payment';
 import HistoryPayment from '../pages/clients/historyPayment/HistoryPayment';
 
 function ClientRouters(props) {
