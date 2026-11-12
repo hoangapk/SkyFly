@@ -10,10 +10,13 @@ function LayoutAdmin(props) {
             <NoelBackground />
             <div className='lg:flex'>
                 <NavbarAdmin />
-                <div className='flex-1'>
-                    <HeaderAdmin />
+                {/* Thêm các class tùy chỉnh thanh cuộn ở đây */}
+                <div className='flex-1 lg:h-screen overflow-y-auto custom-scrollbar'>
+                    <div className='sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/60'>
+                        <HeaderAdmin />
+                    </div>
                     <div className="p-5">
-                      <AdminRouters />
+                        <AdminRouters />
                     </div>
                 </div>
             </div>

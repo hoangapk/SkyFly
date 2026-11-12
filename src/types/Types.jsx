@@ -74,22 +74,23 @@ export const searchType = {
     fullName: "",
     flight_id: "",
     seatype_id: "",
+    listChair : [],
     passengerList: [
         {
             id: 1,
-            title: "adult",
+            title: "người lớn",
             condition: "Từ 12 tuổi trở lên",
             listPerson: []
         },
         {
             id: 2,
-            title: "child",
+            title: "trẻ em",
             condition: "Từ 2 -12 tuổi",
             listPerson: []
         },
         {
             id: 3,
-            title: "infant",
+            title: "trẻ sơ sinh",
             condition: "Dưới 2 tuổi",
             listPerson: []
         }

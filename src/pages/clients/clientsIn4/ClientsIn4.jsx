@@ -1,20 +1,23 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Input } from '@mui/material';
-import { BiCheck, BiChevronDown, BiChevronRight, BiChevronRightCircle, BiUser } from 'react-icons/bi';
+import { Input, TextField } from '@mui/material';
+import { BiCheck, BiChevronRight, BiChevronRightCircle, BiUser } from 'react-icons/bi';
 import { LuBaggageClaim, LuLuggage, LuShieldAlert } from 'react-icons/lu';
 import { SiTarget } from 'react-icons/si';
 import { BookingContext } from '../../../contexts/BookingProvider';
 import { getObjectById } from '../../../services/reponsitory';
-import { cities } from '../../../utils/data';
+import { cities, countries } from '../../../utils/data';
 import { FlightContext } from '../../../contexts/FlightProvider';
 import { SeatTypeContext } from '../../../contexts/SeatTypeProvider';
 import { AirlineContext } from '../../../contexts/AirlineProvider';
+import { Link } from 'react-router-dom';
+import { idID } from '@mui/material/locale';
+import { searchType } from '../../../types/Types';
 
 
 function ClientsIn4(props) {
@@ -23,6 +26,8 @@ function ClientsIn4(props) {
     const flights = useContext(FlightContext);
     const airlines = useContext(AirlineContext);
     const seatTypes = useContext(SeatTypeContext);
+    const [error, setError] = useState(searchType);
+console.log(error);
 
     const handleChangeInput = (e, id, index) => {
         setBooking(pre => {
@@ -37,20 +42,59 @@ function ClientsIn4(props) {
             }
         })
     }
+    const validation = () => {
+        const newError = {
+            fullName: booking.fullName ? "" : "Vui lòng nhập họ tên",
+            phone: booking.phone ? "" : "Vui lòng nhập số điện thoại",
+            email: booking.email ? "" : "Vui lòng nhập email",
 
+
+            passengerList: booking.passengerList.map(p => ({
+                id: p.id,
+                listPerson: p.listPerson.map(c => ({
+                    country_id: c.country_id ? "" : "Vui lòng chọn quốc tịch",
+                    firstName: c.firstName ? "" : "Vui lòng nhập họ",
+                    lastName: c.lastName ? "" : "Vui lòng nhập tên",
+                    gender: c.gender ? "" : "Vui lòng chọn giới tính",
+                    birthDay: c.birthDay ? "" : "Vui lòng chọn ngày sinh"
+                }))
+            }))
+        };
+        setError(newError);
+        // Kiểm tra thông tin liên hệ
+        const checkCustomer = !newError.fullName && !newError.phone && !newError.email;
+        // Kiểm tra thông tin hành khách
+        const checkPassenger = newError.passengerList.every(p =>
+            p.listPerson.every(c =>
+                Object.values(c).every(value => value === "")
+            )
+        );
+        return !(checkCustomer && checkPassenger);
+    }
+   
+
+    const checkError = () => {
+        if (validation()) {
+            return;
+        }
+        navigate("/seatOption")
+    }
     const handleChangeIn4 = (e) => {
         setBooking({ ...booking, [e.target.name]: e.target.value })
     }
 
     const total = useMemo(() => {
-       const chair = getObjectById(seatTypes, booking.seatype_id);
-       console.log(chair?.price);
-       
-       const quantity = booking.passengerList.reduce((sum,item) => item.id != 3 ? sum + item.listPerson.length : sum,0);
-       console.log(quantity);
-       
-       return parseInt(chair?.price)*quantity;
-    },[booking,seatTypes]);
+        const chair = getObjectById(seatTypes, booking.seatype_id);
+        console.log(chair?.price);
+
+        const quantity = booking.passengerList.reduce((sum, item) => item.id != 3 ? sum + item.listPerson.length : sum, 0);
+        console.log(quantity);
+
+        return parseInt(chair?.price) * quantity;
+    }, [booking, seatTypes]);
+    const [expandedId, setExpandedId] = React.useState(null);
+
+
     return (
         <div className='grid grid-cols-3 m-20 gap-10'>
             <div className='col-span-2'>
@@ -59,7 +103,8 @@ function ClientsIn4(props) {
                     {booking.passengerList.map((p, index) => (
                         p.listPerson.map((c, i) => (
                             <div className='mb-5'>
-                                <Accordion>
+                                {/* Thêm expanded và onChange vào Accordion */}
+                                <Accordion expanded={expandedId === `${p.id}-${i}`} onChange={(event, isExpanded) => setExpandedId(isExpanded ? `${p.id}-${i}` : null)}>
                                     <AccordionSummary
                                         aria-controls={`${id}-panel2-content`}
                                         id={`${id}-panel2-header`}
@@ -74,9 +119,13 @@ function ClientsIn4(props) {
                                                         Quốc tịch
                                                     </label>
                                                     <select className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-green-500">
-                                                        <option value="vi">Viet Nam</option>
-                                                        <option value="en">United Kingdom</option>
+                                                        <option value="" disabled selected>Chọn quốc gia/vùng</option>
+                                                        {countries.map(t => (
+                                                            <option value={t.id}>{t.name}</option>
+                                                        ))}
+
                                                     </select>
+                                                    {error?.passengerList[index].listPerson[i]?.country_id && <p className='text-red-500'>Vui lòng chọn quốc gia</p>}
                                                 </div>
                                                 <div></div>
                                                 <div className='col-span-1'>
@@ -84,8 +133,9 @@ function ClientsIn4(props) {
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                                         Họ
                                                     </label>
-                                                    <Input name='firstName' onChange={(e) => handleChangeInput(e, p.id, i)} className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                    <Input error={!!error} name='firstName' onChange={(e) => handleChangeInput(e, p.id, i)} className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                     </Input>
+                                                    {error?.passengerList[index].listPerson[i]?.firstName && <p className='text-red-500'>Vui lòng nhập họ (vd: Nguyễn)</p>}
                                                 </div>
                                                 <div className='col-span-1'>
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -93,6 +143,7 @@ function ClientsIn4(props) {
                                                     </label>
                                                     <Input onChange={(e) => handleChangeInput(e, p.id, i)} name='lastName' className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                     </Input>
+                                                    {error?.passengerList[index].listPerson[i]?.birthDay && <p className='text-red-500'>Vui lòng chọn ngày sinh</p>}
                                                 </div>
                                                 <div className="flex items-center gap-8 border border-gray-300 rounded-2xl px-3  bg-white mt-6">
                                                     {/* Tùy chọn Nam */}
@@ -103,7 +154,6 @@ function ClientsIn4(props) {
                                                             value="male"
                                                             checked={c.gender === 'male' || !c.gender}
                                                             onChange={(e) => {
-                                                                // Custom synthetic event for radio mapping if needed
                                                                 handleChangeInput({ target: { name: 'gender', value: 'male' } }, p.id, i);
                                                             }}
                                                             className="p-2 border-2 border-blue-800 rounded-full appearance-none checked:bg-blue-600 checked:border-sky-400 relative flex items-center justify-center transition-all cursor-pointer focus:outline-none"
@@ -136,19 +186,20 @@ function ClientsIn4(props) {
                                                         name="birthDay"
                                                         className="border border-gray-300 p-2.5 w-full rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                     />
+                                                    {error?.passengerList[index].listPerson[i]?.firstName && <p className='text-red-500'>Vui lòng nhập họ (vd: Nguyễn)</p>}
                                                 </div>
                                             </div>
                                         </div>
                                     </AccordionDetails>
                                     <AccordionActions>
-                                        <Button>Save</Button>
+                                        <Button onClick={() => setExpandedId(null)}>Save</Button>
                                     </AccordionActions>
                                 </Accordion>
                             </div>
                         ))
                     ))}
                 </div>
-                <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl border border-gray-200 shadow-sm mb-5">
+                <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm mb-5">
                     {/* Tiêu đề */}
                     <h2 className="text-xl font-bold text-gray-900 mb-4">
                         Thông tin liên hệ (nhận vé/phiếu thanh toán)
@@ -163,45 +214,45 @@ function ClientsIn4(props) {
                     </div>
 
                     {/* Form Inputs */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-3">
                         {/* Input Họ và tên */}
                         <div>
-                            <input
+                            <TextField
                                 type="text"
                                 placeholder="Họ và tên"
                                 name="fullName"
                                 onChange={handleChangeIn4}
+                                error={!!error.fullName}
+                                helperText={error.fullName}
                                 className="w-full h-12 px-4 rounded-xl border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
                         </div>
 
                         {/* Input Số điện thoại với mã quốc gia */}
-                        <div className="flex rounded-xl border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden transition-all">
-                            <select className="h-12 pl-4 pr-2 bg-transparent text-gray-700 font-medium border-r border-gray-200 focus:outline-none cursor-pointer">
-                                <option value="+84">+84</option>
-                            </select>
-                            <input
-                                type="tel"
-                                placeholder="Số điện thoại"
-                                name="phone"
-                                onChange={handleChangeIn4}
-                                className="w-full h-12 px-4 text-gray-700 placeholder-gray-400 focus:outline-none"
-                            />
-                        </div>
-
+                        <TextField
+                            type="text"
+                            placeholder="Số điện thoại"
+                            name="phone"
+                            onChange={handleChangeIn4}
+                            className="w-full h-12 z-100 px-4 text-gray-700 placeholder-gray-400 focus:outline-none"
+                            error={!!error.phone}
+                            helperText={error.phone}
+                        />
                         {/* Input Email */}
                         <div>
-                            <input
+                            <TextField
                                 type="email"
                                 placeholder="Email"
                                 name="email"
+                                error={!!error.email}
+                                helperText={error.email}
                                 onChange={handleChangeIn4}
                                 className="w-full h-12 px-4 rounded-xl border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
                         </div>
                     </div>
                 </div>
-                <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl border border-gray-200 shadow-sm font-sans mb-5">
+                <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm font-sans mb-5">
                     {/* Header thông tin hành lý */}
                     <div className="flex items-start gap-4 mb-6">
                         <div className="p-2 bg-amber-50 rounded-xl">
@@ -473,10 +524,6 @@ function ClientsIn4(props) {
                         </div>
                     </div>
 
-                    {/* Quá cảnh chuyến đi */}
-                    <div className="bg-lime-100/60 p-3 rounded-xl text-center text-xs font-medium text-gray-800">
-                        5h 30m Quá cảnh tại Phu Quoc
-                    </div>
 
                     {
                         booking.is_round_trip && <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-3">
@@ -528,7 +575,7 @@ function ClientsIn4(props) {
                         </div>
                     }
                 </div>
-                <div className="max-w-md mx-auto p-6 bg-white rounded-2xl border border-gray-200 shadow-sm font-sans">
+                <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm font-sans">
                     {/* Tiêu đề */}
                     <h2 className="text-xl font-bold text-gray-950 mb-4">
                         Chi tiết giá
@@ -536,15 +583,35 @@ function ClientsIn4(props) {
 
                     {/* Dòng giá bạn trả */}
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 mb-3">
-                        <span className="text-base font-medium text-gray-900">
-                            Giá bạn trả
-                        </span>
-                        <button className="flex items-center gap-1.5 focus:outline-none group">
-                            <span className="text-lg font-bold text-orange-600">
-                                {total.toLocaleString('vi-VN')} VND
-                            </span>
-                            <BiChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-transform" />
-                        </button>
+                        <div className='mb-5 w-full'>
+                            <Accordion>
+                                <AccordionSummary
+                                    aria-controls={`${idID}-panel2-content`}
+                                    id={`${idID}-panel2-header`}
+                                >
+                                    <div className='flex justify-between w-full pr-0'>
+                                        <div className="text-base font-medium text-gray-900">
+                                            Giá bạn trả
+                                        </div>
+                                        <div className="text-lg font-bold text-orange-600">
+                                            {total.toLocaleString('vi-VN')} VND
+                                        </div>
+                                    </div>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {
+                                        booking?.passengerList.filter(z => z.id != 3).map((p, index) => (
+                                            p.listPerson.map((c, i) => (
+                                                <div className='flex justify-between mb-2'>
+                                                    <p className=''>{p.title} {i + 1}</p>
+                                                    <p>{getObjectById(seatTypes, booking.seatype_id)?.price} VND</p>
+                                                </div>
+                                            ))
+                                        ))
+                                    }
+                                </AccordionDetails>
+                            </Accordion>
+                        </div>
                     </div>
 
                     {/* Thông báo tích lũy điểm/sao */}
@@ -558,9 +625,11 @@ function ClientsIn4(props) {
                     </div>
 
                     {/* Nút Tiếp tục */}
-                    <button className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl shadow-md transition-all cursor-pointer">
-                        Tiếp tục
-                    </button>
+                    <div onClick={checkError}>
+                        <button className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl shadow-md transition-all cursor-pointer">
+                            Tiếp tục
+                        </button>
+                    </div>
                 </div>
             </div>
         </div >

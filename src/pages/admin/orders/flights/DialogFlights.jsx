@@ -21,7 +21,8 @@ export default function DialogFlights({ open, handleClose, handleClickInput, fli
     const airports = useContext(AirportContext);
     const airlines = useContext(AirlineContext);
     const aircraft = useContext(AircraftContext);
-
+   console.log(flight);
+   
     return (
         <React.Fragment>
             <Dialog

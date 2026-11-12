@@ -25,7 +25,7 @@ function Flights(props) {
     }
 
     const handleClickInput = (e) => {
-        setFlight({ ...flight, [e.target.name]: e.target.value });
+        setFlight({ ...flight, [e.target.name]: e.target.value == "true" ? true : false });
     }
     const addFlight = async () => {
         if (validation()) {

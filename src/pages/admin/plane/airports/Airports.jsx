@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SearchAdmin from '../../../../components/common/admin/SearchAdmin';
 import DialogAirport from './DialogAirport';
-import { airlineType, airportType } from '../../../../types/Types';
+import { airportType } from '../../../../types/Types';
 import TableAirport from './TableAirport';
 import { addDocument, updateDocument } from '../../../../services/firebaseService';
 

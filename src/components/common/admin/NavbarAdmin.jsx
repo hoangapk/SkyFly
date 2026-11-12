@@ -9,7 +9,8 @@ function NavbarAdmin(props) {
     const [show, setShow] = useState(null);
     const [showNav, setShowNav] = useState(false);
     return (
-        <div className={`bg-gradient-to-b from-[#080d24] via-[#0b1736] to-[#102d63]
+        <div
+            className={`bg-gradient-to-b from-[#080d24] via-[#0b1736] to-[#102d63]
     min-h-screen text-white lg:h-screen px-2 duration-700 z-50
     ease-in-out transition-all pb-2 flex flex-col
     ${!showNav ? "lg:w-24" : "lg:w-48"}`}
@@ -54,7 +55,8 @@ function NavbarAdmin(props) {
                                     </p>}
 
                                     {/* Thêm hiệu ứng xoay cho icon mũi tên khi mở menu con */}
-                                    <IoMdArrowDropright className={`absolute right-0.5 transition-transform duration-300 ${show === index ? 'rotate-90' : ''}`} />
+                                    <IoMdArrowDropright className={`absolute right-0.5 transition-transform duration-300
+                            ${show === index ? 'rotate-90' : ''}`} />
                                 </div>) : (<Link to={item.path} className='text-amber-50 flex items-center gap-2 p-3 rounded-md sdNavBar'>
                                     {item.icon}
                                     {
@@ -75,7 +77,7 @@ function NavbarAdmin(props) {
                                             <Link
                                                 key={subIdx}
                                                 to={p.path}
-                                                className='sd ef rounded-md p-2 block sdNavBar'
+                                                className='ef rounded-md p-2 block sdNavBar'
                                             >
                                                 {p.name}
                                             </Link>
@@ -89,7 +91,7 @@ function NavbarAdmin(props) {
                 }
 
             </div >
-        </div>
+        </div >
 
     );
 }

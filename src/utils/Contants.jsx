@@ -53,9 +53,9 @@ export const LISTMENU = [
         ]
     },
     {
-        title: "user Pages",
+        title: "User Pages",
         icon: <PiUserFocus />,
-        path: "/"
+        path: "/userPages"
     },
 
 ];
@@ -75,9 +75,9 @@ export const LISTHOME = [
         path: "/"
     },
     {
-        title: "Book Flight",
+        title: "History Booking",
         icon: <TbTicket />,
-        path: "/"
+        path: "/historyPayment"
     },
     {
         title: "Ancillary Services",
@@ -101,3 +101,9 @@ export const LISTHOME = [
     },
 
 ];
+
+export const initialOptions = {
+  "client-id": "AaPLCDQotziuH7hWXuWqQOiUhADeXWXSpTXy1bnw7kMvw_xIXcPGAuFSCDSO1SHSbSK9HomOV3UgBTOj",
+  currency: "USD",
+  intent: "capture"
+};

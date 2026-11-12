@@ -19,9 +19,21 @@ export const countries = [
         id: 5,
         name: "Singapore",
     },
+    {
+        id: 6,
+        name: "Hong Kong",
+    },
+    {
+        id: 7,
+        name: "Qatar",
+    },
+    {
+        id: 8,
+        name: "United Arab Emirates",
+    },
 ];
 export const cities = [
-    // Vietnam
+    // Vietnam (country_id: 1)
     {
         id: 1,
         name: "Ho Chi Minh City",
@@ -41,7 +53,7 @@ export const cities = [
         code: "DAD",
     },
 
-    // United States
+    // United States (country_id: 2)
     {
         id: 4,
         name: "New York",
@@ -61,7 +73,7 @@ export const cities = [
         code: "CHI",
     },
 
-    // Japan
+    // Japan (country_id: 3)
     {
         id: 7,
         name: "Tokyo",
@@ -81,7 +93,7 @@ export const cities = [
         code: "KYO",
     },
 
-    // South Korea
+    // South Korea (country_id: 4)
     {
         id: 10,
         name: "Seoul",
@@ -101,11 +113,35 @@ export const cities = [
         code: "ICN",
     },
 
-    // Singapore
+    // Singapore (country_id: 5)
     {
         id: 13,
         name: "Singapore",
         country_id: 5,
         code: "SIN",
+    },
+
+    // Hong Kong (country_id: 6)
+    {
+        id: 14,
+        name: "Hong Kong",
+        country_id: 6,
+        code: "HKG",
+    },
+
+    // Qatar (country_id: 7)
+    {
+        id: 15,
+        name: "Doha",
+        country_id: 7,
+        code: "DOH",
+    },
+
+    // United Arab Emirates (country_id: 8)
+    {
+        id: 16,
+        name: "Dubai",
+        country_id: 8,
+        code: "DXB",
     },
 ];

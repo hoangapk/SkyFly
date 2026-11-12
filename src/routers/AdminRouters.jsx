@@ -6,17 +6,22 @@ import Airlines from '../pages/admin/plane/airlines/Airlines';
 import Service_Airline from '../pages/admin/service/serviceAirline/Service_Airline';
 import Flights from '../pages/admin/orders/flights/Flights';
 import Bookings from '../pages/admin/orders/bookings/Bookings';
-import CustomerInfos from '../pages/admin/orders/customerInfos/CustomerInfos';
+import CustomerInfos from '../pages/admin/orders/customerInfors/CustomerInfors';
 import UserPages from '../pages/admin/userPages/UserPages';
 import { Route, Routes } from 'react-router-dom';
 import Service_Details from '../pages/admin/service/serviceDetails/Service_Details';
 import SeatTypes from '../pages/admin/seats/SeatTypes';
+import Categories from '../pages/admin/categories/Categories';
 
 function AdminRouters(props) {
     const MENU = [
         {
             path: "/",
             element: <DashBoard />
+        },
+        {
+            path: "/categories",
+            element: <Categories />
         },
         {
             path: "/airports",
@@ -26,7 +31,7 @@ function AdminRouters(props) {
             path: "/aircrafts",
             element: <Aircrafts />
         },
-         {
+        {
             path: "/airlines",
             element: <Airlines />
         },
@@ -51,7 +56,7 @@ function AdminRouters(props) {
             element: <Bookings />
         },
         {
-            path: "/customerInfos",
+            path: "/customer_infos",
             element: <CustomerInfos />
         },
         {

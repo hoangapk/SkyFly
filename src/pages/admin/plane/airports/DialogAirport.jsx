@@ -37,8 +37,8 @@ export default function DialogAirport({ open, handleClose, handleClickInput, air
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         <TextField helperText={error.name} error={!!error.name} value={airport.name} onChange={handleClickInput} name='name' fullWidth sx={textFieldDarkStyle} id="outlined-name" label="Name" variant="outlined" />
-                        <AutocompleteCard values={airport} error={error} data={countries} name="country_id" handleClickInput={handleClickInput} title={"Country"} />    
-                        <AutocompleteCard values={airport} error={error} data={cities.filter(p => p.country_id == airport.country_id)} name="city_id" handleClickInput={handleClickInput} title={"City"} />
+                        <AutocompleteCard values={airport.country_id} error={error} data={countries} name="country_id" handleClickInput={handleClickInput} title={"Country"} />    
+                        <AutocompleteCard values={airport.city_id} error={error} data={cities} name="city_id" handleClickInput={handleClickInput} title={"City"} />
                     </DialogContentText>
                 </DialogContent>
                 <DialogFooter handleClose={handleClose} add={addAirport} title={airport.id ? "Update" : "Add"} />
