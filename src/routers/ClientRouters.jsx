@@ -7,7 +7,7 @@ import SeatOption from '../pages/clients/seatOption/SeatOption';
 import Payment from '../pages/clients/payment/Payment';
 import HistoryPayment from '../pages/clients/historyPayment/HistoryPayment';
 import ServiceSupport from '../pages/clients/serviceSupport/ServiceSupport';
-import Trip from '../pages/clients/trips/trip';
+import Trip from '../pages/clients/trips/Trip';
 import Experience from '../pages/clients/experiences/Experience';
 import Support from '../pages/clients/supports/Support';
 
@@ -44,10 +44,6 @@ function ClientRouters(props) {
         },
         {
             path: "/trips",
-            element: <Trip />
-        },
-        {
-            path: "/trip",
             element: <Trip />
         },
         {
