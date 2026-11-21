@@ -15,7 +15,6 @@ import { cities, countries } from '../../../utils/data';
 import { FlightContext } from '../../../contexts/FlightProvider';
 import { SeatTypeContext } from '../../../contexts/SeatTypeProvider';
 import { AirlineContext } from '../../../contexts/AirlineProvider';
-import { Link } from 'react-router-dom';
 import { idID } from '@mui/material/locale';
 import { searchType } from '../../../types/Types';
 

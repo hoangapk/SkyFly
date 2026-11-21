@@ -6,6 +6,11 @@ import ClientsIn4 from '../pages/clients/clientsIn4/ClientsIn4';
 import SeatOption from '../pages/clients/seatOption/SeatOption';
 import Payment from '../pages/clients/payment/Payment';
 import HistoryPayment from '../pages/clients/historyPayment/HistoryPayment';
+import ServiceSupport from '../pages/clients/serviceSupport/ServiceSupport';
+import Trip from '../pages/clients/trips/trip';
+import Experience from '../pages/clients/experiences/Experience';
+import Support from '../pages/clients/supports/Support';
+
 
 function ClientRouters(props) {
     const routers = [
@@ -33,7 +38,26 @@ function ClientRouters(props) {
             path: "/historyPayment",
             element: <HistoryPayment />
         },
-      
+        {
+            path: "/serviceSupport",
+            element: <ServiceSupport />
+        },
+        {
+            path: "/trips",
+            element: <Trip />
+        },
+        {
+            path: "/trip",
+            element: <Trip />
+        },
+        {
+            path: "/experience",
+            element: <Experience />
+        },
+        {
+            path: "/support",
+            element: <Support />
+        }
     ];
     return (
         <Routes>

@@ -80,24 +80,24 @@ export const LISTHOME = [
         path: "/historyPayment"
     },
     {
-        title: "Dịch vụ bổ trợ",
+        title: "Dịch vụ hỗ trợ",
         icon: <MdOutlineSupportAgent />,
-        path: "/"
+        path: "/serviceSupport"
     },
     {
         title: "Hành trình",
         icon: <FaRoad />,
-        path: "/"
+        path: "/trip"
     },
     {
         title: "Trải nghiệm chuyến bay",
         icon: <IoAccessibility />,
-        path: "/"
+        path: "/experience"
     },
     {
         title: "Trợ giúp",
         icon: <MdOutlineContactSupport />,
-        path: "/"
+        path: "/support"
     },
 
 ];

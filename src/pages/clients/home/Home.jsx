@@ -1,4 +1,3 @@
-
 import SlideBanner from '../slides/SlideBanner';
 import { TbSteam } from 'react-icons/tb';
 import { FcNews } from "react-icons/fc";
