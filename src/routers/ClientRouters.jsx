@@ -43,7 +43,7 @@ function ClientRouters(props) {
             element: <ServiceSupport />
         },
         {
-            path: "/trips",
+            path: "/trip",
             element: <Trip />
         },
         {
