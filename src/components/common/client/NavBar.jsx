@@ -34,7 +34,7 @@ function NavBar(props) {
         className={`bg-gradient-to-b from-[#080d24] via-[#0b1736] to-[#102d63]
     min-h-screen text-white lg:h-screen px-2 duration-700 z-50
     ease-in-out transition-all pb-2 flex flex-col
-    ${!showNav ? "lg:w-24" : "lg:w-48"}`}
+    ${!showNav ? "lg:w-24" : "lg:w-59"}`}
     >
         {/* LOGO */}
         <div className='flex justify-center items-center h-30 gap-4  relative shrink-0'>
